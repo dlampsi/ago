@@ -1,0 +1,7 @@
+---
+- name: Test playbook
+  hosts: localhost
+  tasks:
+    - name: Printer
+      debug: 
+        msg: "Hello from printer"
