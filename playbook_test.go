@@ -1,6 +1,8 @@
 package ago
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/dlampsi/generigo"
@@ -28,4 +30,37 @@ func Test_Command(t *testing.T) {
 	f("testdata/debug.yml", &PlaybookOptions{}, []string{"ansible-playbook", "testdata/debug.yml"}, true)
 	f("testdata/debug.yml", nil, []string{"ansible-playbook", "testdata/debug.yml"}, true)
 	f("testdata/debug.yml", &PlaybookOptions{Inventory: "testdata/inventory"}, []string{"ansible-playbook", "--inventory", "testdata/inventory", "testdata/debug.yml"}, true)
+}
+
+func Test_Run(t *testing.T) {
+	f := func(id string, p *Playbook, ok bool) {
+		t.Helper()
+		t.Run(id, func(t *testing.T) {
+			os.Setenv("ANSIBLE_FORCE_COLOR", "true")
+			err := p.Run()
+			if err != nil {
+				if ok {
+					t.Fatalf("unexpected error from Run: %s", err.Error())
+				}
+				return
+			}
+			if err == nil && !ok {
+				t.Fatalf("expected error from Run")
+			}
+		})
+	}
+
+	f("Existed Play", &Playbook{
+		Name: "testdata/debug.yml",
+		Exec: &DefaultExecutor{
+			Writer: ioutil.Discard,
+		},
+	}, true)
+
+	f("Not Existed Play", &Playbook{
+		Name: "noneexists.yml",
+		Exec: &DefaultExecutor{
+			Writer: ioutil.Discard,
+		},
+	}, false)
 }
