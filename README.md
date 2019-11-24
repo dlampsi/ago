@@ -2,7 +2,7 @@
 
 [![GoDoc](https://godoc.org/github.com/dlampsi/ago?status.svg)](https://godoc.org/github.com/dlampsi/ago) [![Actions Status](https://github.com/dlampsi/ago/workflows/default/badge.svg)](https://github.com/dlampsi/ago/actions)
 
-Go module for execute Ansible playbooks
+Go module for execute Ansible commands. Supported comands at this moment: `ansible`, `ansible-playbook`.
 
 ## Usage
 
@@ -17,6 +17,7 @@ Playbook run example:
 p := ago.Playbook{
     Name: "testdata/debug.yml",
 }
+
 // Playbook options
 p.Options = &ago.PlaybookOptions{
     Inventory: "testdata/inventory",
@@ -26,6 +27,10 @@ p.Options = &ago.PlaybookOptions{
         "var3": []string{"one", "two"},
     },
 }
+
+// Optionaly you can provide any ANSIBLE_ env variables
+os.Setenv("ANSIBLE_FORCE_COLOR", "true")
+
 // Execute
 if err := p.Run(); err != nil {
     panic(err)
