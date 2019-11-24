@@ -52,6 +52,9 @@ func (p *Playbook) Run() error {
 	if err != nil {
 		return err
 	}
+	if p.Exec == nil {
+		p.Exec = &DefaultExecutor{}
+	}
 	return p.Exec.Exec(cmd[0], cmd[1:])
 }
 

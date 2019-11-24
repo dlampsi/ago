@@ -42,6 +42,9 @@ func (a *Ansible) Run() error {
 	if err != nil {
 		return err
 	}
+	if a.Exec == nil {
+		a.Exec = &DefaultExecutor{}
+	}
 	return a.Exec.Exec(cmd[0], cmd[1:])
 }
 
