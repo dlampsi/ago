@@ -8,7 +8,7 @@ import (
 	"github.com/dlampsi/generigo"
 )
 
-func Test_Command(t *testing.T) {
+func Test_PlaybookCommand(t *testing.T) {
 	f := func(playName string, playOptions *PlaybookOptions, expectedCmd []string, ok bool) {
 		t.Helper()
 		p := &Playbook{
@@ -32,17 +32,14 @@ func Test_Command(t *testing.T) {
 	f("testdata/debug.yml", &PlaybookOptions{Inventory: "testdata/inventory"}, []string{"ansible-playbook", "--inventory", "testdata/inventory", "testdata/debug.yml"}, true)
 }
 
-func Test_Run(t *testing.T) {
+func Test_PlaybookRun(t *testing.T) {
 	f := func(id string, p *Playbook, ok bool) {
 		t.Helper()
 		t.Run(id, func(t *testing.T) {
 			os.Setenv("ANSIBLE_FORCE_COLOR", "true")
 			err := p.Run()
-			if err != nil {
-				if ok {
-					t.Fatalf("unexpected error from Run: %s", err.Error())
-				}
-				return
+			if err != nil && ok {
+				t.Fatalf("unexpected error from Run: %s", err.Error())
 			}
 			if err == nil && !ok {
 				t.Fatalf("expected error from Run")

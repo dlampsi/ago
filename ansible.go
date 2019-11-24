@@ -18,21 +18,30 @@ func (a *Ansible) Command() ([]string, error) {
 	if a.HostPattern != "" {
 		cmd = append(cmd, a.HostPattern)
 	}
-	opts, err := a.Options.Сompose()
-	if err != nil {
-		return nil, err
+	// Ansible options
+	if a.Options != nil {
+		opts, err := a.Options.Сompose()
+		if err != nil {
+			return nil, err
+		}
+		cmd = append(cmd, opts...)
 	}
-	cmd = append(cmd, opts...)
-	copts, err := a.ConnectionOptions.Сompose()
-	if err != nil {
-		return nil, err
+	// Connection options
+	if a.ConnectionOptions != nil {
+		copts, err := a.ConnectionOptions.Сompose()
+		if err != nil {
+			return nil, err
+		}
+		cmd = append(cmd, copts...)
 	}
-	cmd = append(cmd, copts...)
-	popts, err := a.PrivilegeEscOptions.Сompose()
-	if err != nil {
-		return nil, err
+	// Privilege Escalation Options
+	if a.PrivilegeEscOptions != nil {
+		popts, err := a.PrivilegeEscOptions.Сompose()
+		if err != nil {
+			return nil, err
+		}
+		cmd = append(cmd, popts...)
 	}
-	cmd = append(cmd, popts...)
 	return cmd, nil
 }
 
